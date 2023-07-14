@@ -17,32 +17,29 @@ export async function loader() {
 export default function Root() {
   const tips = useLoaderData() as ITips[];
   const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-07-31");
+  const [endDate, setEndDate] = useState("2023-06-30");
   const [filteredTips, setFilteredTips] = useState<ITips[]>(tips);
   const [total, setTotal] = useState<number>(0);
 
   const onChangeStartDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = moment(new Date(e.currentTarget.value)).format('yyyy-MM-DD');
-    setStartDate(newDate);
+    setStartDate(moment(new Date(e.currentTarget.value)).format('yyyy-MM-DD'));
     filterTips();
-    console.log('newStartDate: ', newDate);
+    calcTotal();
   };
   
   const onChangeEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = moment(new Date(e.currentTarget.value)).format('yyyy-MM-DD');
-    setEndDate(newDate);
+    setEndDate(moment(new Date(e.currentTarget.value)).format('yyyy-MM-DD'));
     filterTips();
-    console.log('newEndDate: ', newDate);
-  };
-  
-  const filterTips = () => {
-    setFilteredTips(filteredTips.filter(tip => new Date(tip.createdAt) >= new Date(startDate)));
-    setFilteredTips(filteredTips.filter(tip => new Date(tip.createdAt) <= new Date(endDate)));
     calcTotal();
-    console.log('[ NEW: ]', filteredTips.length);
-    filteredTips.map(tip => console.log(tip.createdAt));
   };
 
+  const filterTips = () => {
+    let tmp = tips;
+    tmp = tmp.filter(tip => new Date(tip.createdAt) >= new Date(startDate));
+    tmp = tmp.filter(tip => new Date(tip.createdAt) <= new Date(endDate));
+    setFilteredTips(tmp);
+  }
+  
   const calcTotal = () => {
     setTotal(filteredTips.reduce((tempSum, tip) => tempSum + tip.summ, 0));
   }
@@ -73,14 +70,13 @@ export default function Root() {
             <Card className="mb-2" key={post.id}>
               <Card.Body>
                 <Card.Title>
-                  id: {post.id}
+                  {post.comments ? post.comments : <span>no comments</span>}
                 </Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
-                  Summ: {post.summ}
+                  Summ: {post.summ}$
                 </Card.Subtitle>
                 <Card.Text>
-                  Date: {new Date(post.createdAt).toDateString()}<br />
-                  Comments: {post.comments ? post.comments : <span>no comments</span>}
+                  {new Date(post.createdAt).toDateString()}<br />
                 </Card.Text>
               </Card.Body>
             </Card>
