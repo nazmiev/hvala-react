@@ -1,13 +1,13 @@
 import { useLoaderData } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getNews } from "./utils";
+import { ITips } from "./types";
+import moment from 'moment';
 import Container from "react-bootstrap/Container";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import Card from "react-bootstrap/Card";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from 'react-bootstrap/Form';
-import { ITips } from "./types";
-import moment from 'moment';
 
 export async function loader() {
   const tips = await getNews();
